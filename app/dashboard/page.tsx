@@ -12,10 +12,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Plus, Users, FileText, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 
+type StudyWithCounts = Study & {
+  participantCount: number;
+  domainCount: number;
+};
+
 export default function DashboardPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [studies, setStudies] = useState<Study[]>([]);
+  const [studies, setStudies] = useState<StudyWithCounts[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +38,27 @@ export default function DashboardPage() {
 
       if (error) throw error;
 
-      setStudies(data || []);
+      const studiesWithCounts = await Promise.all(
+        (data || []).map(async (study) => {
+          const { count: participantCount } = await supabase
+            .from('participants')
+            .select('id', { count: 'exact', head: true })
+            .eq('study_id', study.id);
+
+          const { count: domainCount } = await supabase
+            .from('study_domains')
+            .select('id', { count: 'exact', head: true })
+            .eq('study_id', study.id);
+
+          return {
+            ...study,
+            participantCount: participantCount || 0,
+            domainCount: domainCount || 0,
+          };
+        })
+      );
+
+      setStudies(studiesWithCounts);
     } catch (error: any) {
       toast.error('Failed to load studies');
       console.error(error);
@@ -110,11 +135,11 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between text-sm text-slate-600">
                       <div className="flex items-center">
                         <Users className="h-4 w-4 mr-1" />
-                        <span>0 participants</span>
+                        <span>{study.participantCount} {study.participantCount === 1 ? 'participant' : 'participants'}</span>
                       </div>
                       <div className="flex items-center">
                         <TrendingUp className="h-4 w-4 mr-1" />
-                        <span>{study.domains?.length || 0} domains</span>
+                        <span>{study.domainCount} {study.domainCount === 1 ? 'domain' : 'domains'}</span>
                       </div>
                     </div>
                   </CardContent>
