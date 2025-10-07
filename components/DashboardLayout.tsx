@@ -23,8 +23,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/dashboard/proposals', label: 'Proposals', icon: FileText },
-    { href: '/dashboard/rounds', label: 'Rounds', icon: BarChart },
     { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   ];
 

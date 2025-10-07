@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase, Study, Participant } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { ArrowLeft, Users, FileText, ChartBar as BarChart, Settings, CirclePlay as PlayCircle, UserPlus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Users, FileText, ChartBar as BarChart, Settings, CirclePlay as PlayCircle, UserPlus, Trash2, TrendingUp } from 'lucide-react';
 
 export default function StudyDetailPage() {
   const router = useRouter();
@@ -281,7 +281,16 @@ export default function StudyDetailPage() {
               <CardDescription>Navigate to different stages of your Delphi study</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+                <Button
+                  variant="outline"
+                  className="h-auto py-4 flex flex-col items-center gap-2 bg-white hover:bg-indigo-50 border-2"
+                  onClick={() => router.push(`/dashboard/studies/${studyId}/review`)}
+                >
+                  <TrendingUp className="h-6 w-6 text-indigo-600" />
+                  <span className="font-semibold text-sm">Progress</span>
+                  <span className="text-xs text-slate-500">Review</span>
+                </Button>
                 <Button
                   variant="outline"
                   className="h-auto py-4 flex flex-col items-center gap-2 bg-white hover:bg-teal-50"
@@ -335,8 +344,6 @@ export default function StudyDetailPage() {
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="participants">Participants</TabsTrigger>
-              <TabsTrigger value="proposals">Proposals</TabsTrigger>
-              <TabsTrigger value="rounds">Rounds</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4">
@@ -494,43 +501,6 @@ export default function StudyDetailPage() {
                       Participants can only be modified while the study is in draft status
                     </p>
                   )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="proposals">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Proposals</CardTitle>
-                  <CardDescription>
-                    View and manage participant proposals
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-center text-slate-600 py-8">No proposals submitted yet</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="rounds">
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle>Delphi Rounds</CardTitle>
-                      <CardDescription>
-                        Manage round progression and view results
-                      </CardDescription>
-                    </div>
-                    <Button onClick={() => router.push(`/dashboard/studies/${studyId}/rounds`)}>
-                      Manage Rounds
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-center text-slate-600 py-8">
-                    Configure and manage your Delphi study rounds
-                  </p>
                 </CardContent>
               </Card>
             </TabsContent>
