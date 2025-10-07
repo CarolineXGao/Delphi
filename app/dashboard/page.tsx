@@ -78,13 +78,23 @@ export default function DashboardPage() {
     }
   };
 
+  const getStageProgress = (study: StudyWithCounts) => {
+    const completedCount = study.completed_stages?.length || 0;
+    return Math.round((completedCount / 7) * 100);
+  };
+
+  const getStageName = (stageNumber: number) => {
+    const stages = ['Setup', 'Collecting Proposals', 'Synthesis & Items', 'Rating', 'Re-Rating', 'Validation', 'Results'];
+    return stages[stageNumber - 1] || 'Unknown';
+  };
+
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <div className="space-y-8">
+        <div className="max-w-7xl mx-auto p-8 space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+              <h1 className="text-3xl font-bold text-slate-900">Studies</h1>
               <p className="text-slate-600 mt-1">Manage your Delphi research studies</p>
             </div>
             <Button onClick={() => router.push('/dashboard/studies/new')} size="lg">
@@ -110,41 +120,69 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {studies.map((study) => (
-                <Card
-                  key={study.id}
-                  className="hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => router.push(`/dashboard/studies/${study.id}`)}
-                >
-                  <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge className={getStatusColor(study.status)}>
-                        {study.status}
-                      </Badge>
-                      <span className="text-sm text-slate-500">
-                        Round {study.current_round}/{study.total_rounds}
-                      </span>
-                    </div>
-                    <CardTitle className="text-xl">{study.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">
-                      {study.description || 'No description provided'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <div className="flex items-center">
-                        <Users className="h-4 w-4 mr-1" />
-                        <span>{study.participantCount} {study.participantCount === 1 ? 'participant' : 'participants'}</span>
+            <div className="space-y-3">
+              {studies.map((study) => {
+                const progress = getStageProgress(study);
+                return (
+                  <Card
+                    key={study.id}
+                    className="hover:shadow-md transition-all hover:border-blue-300 cursor-pointer"
+                    onClick={() => router.push(`/dashboard/studies/${study.id}/review`)}
+                  >
+                    <CardContent className="py-5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0 pr-6">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-lg font-semibold text-slate-900 truncate">
+                              {study.title}
+                            </h3>
+                            <Badge className={getStatusColor(study.status)}>
+                              {study.status}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-slate-600 line-clamp-1 mb-3">
+                            {study.description || 'No description provided'}
+                          </p>
+
+                          <div className="flex items-center gap-6 text-sm text-slate-600">
+                            <div className="flex items-center gap-1">
+                              <Users className="h-4 w-4" />
+                              <span>{study.participantCount} participants</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <TrendingUp className="h-4 w-4" />
+                              <span>{study.domainCount} domains</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="font-medium">Stage {study.current_stage || 1}:</span>
+                              <span>{getStageName(study.current_stage || 1)}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-blue-600 transition-all"
+                                  style={{ width: `${progress}%` }}
+                                />
+                              </div>
+                              <span className="text-xs font-medium">{progress}% Complete</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/dashboard/studies/${study.id}/review`);
+                          }}
+                          className="shrink-0"
+                        >
+                          Open Review
+                        </Button>
                       </div>
-                      <div className="flex items-center">
-                        <TrendingUp className="h-4 w-4 mr-1" />
-                        <span>{study.domainCount} {study.domainCount === 1 ? 'domain' : 'domains'}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>

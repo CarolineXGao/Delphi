@@ -28,6 +28,9 @@ export type Study = {
   created_by: string;
   created_at: string;
   updated_at: string;
+  current_stage?: number;
+  completed_stages?: number[];
+  stage_progress?: Record<string, any>;
 };
 
 export type Participant = {
