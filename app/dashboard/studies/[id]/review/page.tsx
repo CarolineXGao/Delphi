@@ -309,7 +309,7 @@ export default function ReviewWorkspacePage() {
             <ChecklistItem
               label="Invite participants"
               isComplete={hasParticipants}
-              onClick={() => router.push(`/dashboard/studies/${studyId}`)}
+              onClick={() => router.push(`/dashboard/studies/${studyId}/participants`)}
             />
           </CardContent>
         </Card>
@@ -392,7 +392,7 @@ export default function ReviewWorkspacePage() {
                 <MessageSquare className="h-4 w-4 mr-2" />
                 View Proposals
               </Button>
-              <Button variant="outline" onClick={() => router.push(`/dashboard/studies/${studyId}`)}>
+              <Button variant="outline" onClick={() => router.push(`/dashboard/studies/${studyId}/participants`)}>
                 <Users className="h-4 w-4 mr-2" />
                 Manage Participants
               </Button>
