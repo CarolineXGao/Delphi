@@ -28,13 +28,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <aside className="fixed left-0 top-0 h-full w-64 bg-white border-r border-slate-200 p-6">
-        <div className="flex items-center space-x-2 mb-8">
+      <aside className="fixed left-0 top-0 h-full w-20 bg-white border-r border-slate-200 py-6 flex flex-col items-center">
+        <div className="mb-8">
           <Microscope className="h-8 w-8 text-blue-600" />
-          <span className="text-xl font-bold text-slate-900">Delphi Platform</span>
         </div>
 
-        <nav className="space-y-2">
+        <nav className="space-y-4 flex-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
@@ -43,32 +42,29 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 key={item.href}
                 onClick={() => router.push(item.href)}
                 className={cn(
-                  'w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors',
+                  'flex items-center justify-center w-12 h-12 rounded-lg transition-colors',
                   isActive
                     ? 'bg-blue-50 text-blue-600'
                     : 'text-slate-700 hover:bg-slate-100'
                 )}
+                title={item.label}
               >
-                <Icon className="h-5 w-5" />
-                <span className="font-medium">{item.label}</span>
+                <Icon className="h-6 w-6" />
               </button>
             );
           })}
         </nav>
 
-        <div className="absolute bottom-6 left-6 right-6">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={handleSignOut}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
-        </div>
+        <button
+          onClick={handleSignOut}
+          className="flex items-center justify-center w-12 h-12 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+          title="Sign Out"
+        >
+          <LogOut className="h-6 w-6" />
+        </button>
       </aside>
 
-      <main className="ml-64 p-8">
+      <main className="ml-20 p-8">
         {children}
       </main>
     </div>
