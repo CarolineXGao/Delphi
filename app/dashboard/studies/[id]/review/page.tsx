@@ -68,12 +68,14 @@ export default function ReviewWorkspacePage() {
       const { count: participantsCount } = await supabase
         .from('participants')
         .select('id', { count: 'exact', head: true })
-        .eq('study_id', studyId);
+        .eq('study_id', studyId)
+        .neq('role', 'admin');
 
       const { count: activeParticipantsCount } = await supabase
         .from('participants')
         .select('id', { count: 'exact', head: true })
         .eq('study_id', studyId)
+        .neq('role', 'admin')
         .not('joined_at', 'is', null);
 
       const { count: domainsCount } = await supabase
