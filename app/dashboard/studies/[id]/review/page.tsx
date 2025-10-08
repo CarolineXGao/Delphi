@@ -255,48 +255,36 @@ export default function ReviewWorkspacePage() {
 
   const renderStage1Setup = (status: 'locked' | 'in_progress' | 'complete') => {
     const hasDomains = stats.totalDomains > 0;
-    const hasQuestions = stats.totalQuestions > 0;
-    const canMarkComplete = hasDomains && hasQuestions;
+    const canMarkComplete = hasDomains;
 
     return (
       <StageContent
         stageNumber={1}
         title="Setup"
-        description="Define the foundation of your Delphi study with research domains and guiding questions."
+        description="Define the research domains that will organize your Delphi study."
         status={status}
-        helpText="This stage ensures your study has a clear structure: research domains and guiding questions for experts to respond to. Complete the checklist items to proceed."
+        helpText="This stage ensures your study has a clear structure with research domains (topic areas). Proposal questions will be added in Stage 2."
         onMarkComplete={() => handleMarkStageComplete(1)}
         canMarkComplete={canMarkComplete}
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <MetricCard
             label="Domains"
             value={stats.totalDomains}
             icon={<FileText className="h-8 w-8" />}
             subtext="Research categories"
           />
-          <MetricCard
-            label="Questions"
-            value={stats.totalQuestions}
-            icon={<MessageSquare className="h-8 w-8" />}
-            subtext="For proposals"
-          />
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Setup Checklist</CardTitle>
-            <CardDescription>Complete these steps to begin collecting proposals</CardDescription>
+            <CardDescription>Complete this step to move to Stage 2</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <ChecklistItem
               label="Define research domains"
               isComplete={hasDomains}
-              onClick={() => router.push(`/dashboard/studies/${studyId}/domains`)}
-            />
-            <ChecklistItem
-              label="Create proposal questions"
-              isComplete={hasQuestions}
               onClick={() => router.push(`/dashboard/studies/${studyId}/domains`)}
             />
           </CardContent>
@@ -305,7 +293,7 @@ export default function ReviewWorkspacePage() {
         <Card className="border-blue-200 bg-blue-50">
           <CardHeader>
             <CardTitle className="text-blue-900">Setup Your Study</CardTitle>
-            <CardDescription>Add domains and questions to structure your Delphi study</CardDescription>
+            <CardDescription>Add domains to categorize your research areas</CardDescription>
           </CardHeader>
           <CardContent>
             <Button
@@ -314,7 +302,7 @@ export default function ReviewWorkspacePage() {
               className="w-full"
             >
               <FileText className="h-5 w-5 mr-2" />
-              Go to Domains & Questions
+              Manage Domains
             </Button>
           </CardContent>
         </Card>

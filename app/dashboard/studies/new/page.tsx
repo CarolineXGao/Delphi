@@ -68,7 +68,7 @@ export default function NewStudyPage() {
         joined_at: new Date().toISOString(),
       });
 
-      toast.success('Study created successfully! Now add domains and questions.');
+      toast.success('Study created successfully! Now add domains.');
       router.push(`/dashboard/studies/${data.id}/domains`);
     } catch (error: any) {
       toast.error('Failed to create study');
@@ -127,11 +127,11 @@ export default function NewStudyPage() {
             <Card className="border-blue-200 bg-blue-50">
               <CardHeader>
                 <CardTitle className="text-blue-900">Next Steps</CardTitle>
-                <CardDescription>After creating your study, you'll add domains and questions</CardDescription>
+                <CardDescription>After creating your study, you'll add domains</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-blue-800">
-                  Domains and proposal questions will be added in the next step using the dedicated Domains & Questions management page.
+                  Domains will be added in Stage 1 (Setup). Proposal questions and participants will be added in Stage 2.
                 </p>
               </CardContent>
             </Card>
