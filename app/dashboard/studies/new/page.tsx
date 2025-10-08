@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plus, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export default function NewStudyPage() {
   const router = useRouter();
@@ -22,6 +23,9 @@ export default function NewStudyPage() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [domains, setDomains] = useState<Array<{ name: string; description: string }>>([]);
+  const [newDomainName, setNewDomainName] = useState('');
+  const [newDomainDesc, setNewDomainDesc] = useState('');
   const [totalRounds, setTotalRounds] = useState(3);
   const [likertMin, setLikertMin] = useState(1);
   const [likertMax, setLikertMax] = useState(9);
@@ -29,11 +33,31 @@ export default function NewStudyPage() {
   const [iqrThreshold, setIqrThreshold] = useState(1);
   const [netAgreementThreshold, setNetAgreementThreshold] = useState(75);
 
+  const addDomain = () => {
+    if (!newDomainName.trim()) {
+      toast.error('Domain name is required');
+      return;
+    }
+
+    setDomains([...domains, { name: newDomainName.trim(), description: newDomainDesc.trim() }]);
+    setNewDomainName('');
+    setNewDomainDesc('');
+  };
+
+  const removeDomain = (index: number) => {
+    setDomains(domains.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!user) {
       toast.error('You must be logged in');
+      return;
+    }
+
+    if (domains.length === 0) {
+      toast.error('Please add at least one domain');
       return;
     }
 
@@ -68,8 +92,23 @@ export default function NewStudyPage() {
         joined_at: new Date().toISOString(),
       });
 
-      toast.success('Study created successfully! Now add domains.');
-      router.push(`/dashboard/studies/${data.id}/domains`);
+      // Create domains
+      const domainInserts = domains.map((domain, index) => ({
+        study_id: data.id,
+        name: domain.name,
+        description: domain.description,
+        display_order: index + 1,
+        item_count: 0,
+      }));
+
+      const { error: domainsError } = await supabase
+        .from('study_domains')
+        .insert(domainInserts);
+
+      if (domainsError) throw domainsError;
+
+      toast.success('Study and domains created successfully!');
+      router.push(`/dashboard/studies/${data.id}/review`);
     } catch (error: any) {
       toast.error('Failed to create study');
       console.error(error);
@@ -121,6 +160,68 @@ export default function NewStudyPage() {
                     rows={4}
                   />
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Study Domains</CardTitle>
+                <CardDescription>Define research categories for your study</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="domain-name">Domain Name *</Label>
+                    <Input
+                      id="domain-name"
+                      placeholder="e.g., Patient Safety, Clinical Protocols"
+                      value={newDomainName}
+                      onChange={(e) => setNewDomainName(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addDomain())}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="domain-desc">Description (Optional)</Label>
+                    <Textarea
+                      id="domain-desc"
+                      placeholder="Brief description of this domain"
+                      value={newDomainDesc}
+                      onChange={(e) => setNewDomainDesc(e.target.value)}
+                      rows={2}
+                    />
+                  </div>
+                  <Button type="button" onClick={addDomain} variant="outline" className="w-full">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Domain
+                  </Button>
+                </div>
+
+                {domains.length > 0 && (
+                  <div className="border-t pt-4 mt-4">
+                    <p className="text-sm font-medium text-slate-700 mb-3">{domains.length} domain{domains.length !== 1 ? 's' : ''} added:</p>
+                    <div className="space-y-2">
+                      {domains.map((domain, index) => (
+                        <div key={index} className="flex items-start justify-between p-3 bg-slate-50 rounded-md">
+                          <div className="flex-1">
+                            <p className="font-medium text-slate-900">{domain.name}</p>
+                            {domain.description && (
+                              <p className="text-sm text-slate-600 mt-1">{domain.description}</p>
+                            )}
+                          </div>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removeDomain(index)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
