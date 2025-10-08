@@ -292,8 +292,8 @@ export default function ReviewWorkspacePage() {
 
         <Card className="border-blue-200 bg-blue-50">
           <CardHeader>
-            <CardTitle className="text-blue-900">Setup Your Study</CardTitle>
-            <CardDescription>Add domains to categorize your research areas</CardDescription>
+            <CardTitle className="text-blue-900">Manage your domain</CardTitle>
+            <CardDescription>Add or remove domains to categorize your research areas</CardDescription>
           </CardHeader>
           <CardContent>
             <Button
