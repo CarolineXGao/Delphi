@@ -13,8 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { ArrowLeft, Plus, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { ArrowLeft } from 'lucide-react';
 
 export default function NewStudyPage() {
   const router = useRouter();
@@ -23,8 +22,6 @@ export default function NewStudyPage() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [domains, setDomains] = useState<string[]>([]);
-  const [newDomain, setNewDomain] = useState('');
   const [totalRounds, setTotalRounds] = useState(3);
   const [likertMin, setLikertMin] = useState(1);
   const [likertMax, setLikertMax] = useState(9);
@@ -32,27 +29,11 @@ export default function NewStudyPage() {
   const [iqrThreshold, setIqrThreshold] = useState(1);
   const [netAgreementThreshold, setNetAgreementThreshold] = useState(75);
 
-  const addDomain = () => {
-    if (newDomain.trim() && !domains.includes(newDomain.trim())) {
-      setDomains([...domains, newDomain.trim()]);
-      setNewDomain('');
-    }
-  };
-
-  const removeDomain = (domain: string) => {
-    setDomains(domains.filter(d => d !== domain));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!user) {
       toast.error('You must be logged in');
-      return;
-    }
-
-    if (domains.length === 0) {
-      toast.error('Please add at least one domain');
       return;
     }
 
@@ -64,7 +45,6 @@ export default function NewStudyPage() {
         .insert({
           title,
           description,
-          domains: JSON.stringify(domains),
           total_rounds: totalRounds,
           likert_min: likertMin,
           likert_max: likertMax,
@@ -88,8 +68,8 @@ export default function NewStudyPage() {
         joined_at: new Date().toISOString(),
       });
 
-      toast.success('Study created successfully');
-      router.push(`/dashboard/studies/${data.id}`);
+      toast.success('Study created successfully! Now add domains and questions.');
+      router.push(`/dashboard/studies/${data.id}/domains`);
     } catch (error: any) {
       toast.error('Failed to create study');
       console.error(error);
@@ -144,37 +124,15 @@ export default function NewStudyPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-blue-200 bg-blue-50">
               <CardHeader>
-                <CardTitle>Study Domains</CardTitle>
-                <CardDescription>Define the topic areas for participant recommendations</CardDescription>
+                <CardTitle className="text-blue-900">Next Steps</CardTitle>
+                <CardDescription>After creating your study, you'll add domains and questions</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="e.g., Patient Safety, Clinical Protocols"
-                    value={newDomain}
-                    onChange={(e) => setNewDomain(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addDomain())}
-                  />
-                  <Button type="button" onClick={addDomain}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {domains.map((domain) => (
-                    <Badge key={domain} variant="secondary" className="px-3 py-1">
-                      {domain}
-                      <button
-                        type="button"
-                        onClick={() => removeDomain(domain)}
-                        className="ml-2 hover:text-red-600"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
+              <CardContent>
+                <p className="text-sm text-blue-800">
+                  Domains and proposal questions will be added in the next step using the dedicated Domains & Questions management page.
+                </p>
               </CardContent>
             </Card>
 
