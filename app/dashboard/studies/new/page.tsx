@@ -124,18 +124,6 @@ export default function NewStudyPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-blue-200 bg-blue-50">
-              <CardHeader>
-                <CardTitle className="text-blue-900">Next Steps</CardTitle>
-                <CardDescription>After creating your study, you'll add domains</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-blue-800">
-                  Domains will be added in Stage 1 (Setup). Proposal questions and participants will be added in Stage 2.
-                </p>
-              </CardContent>
-            </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle>Study Configuration</CardTitle>
