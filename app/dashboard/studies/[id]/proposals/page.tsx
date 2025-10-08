@@ -77,7 +77,8 @@ export default function CollectingProposalsPage() {
       const { data: participantsData, error: participantsError } = await supabase
         .from('participants')
         .select('*')
-        .eq('study_id', studyId);
+        .eq('study_id', studyId)
+        .neq('role', 'admin');
 
       if (participantsError) throw participantsError;
       setParticipants(participantsData || []);
