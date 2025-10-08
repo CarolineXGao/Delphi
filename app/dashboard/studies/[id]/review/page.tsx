@@ -255,21 +255,20 @@ export default function ReviewWorkspacePage() {
 
   const renderStage1Setup = (status: 'locked' | 'in_progress' | 'complete') => {
     const hasDomains = stats.totalDomains > 0;
-    const hasParticipants = stats.totalParticipants > 0;
     const hasQuestions = stats.totalQuestions > 0;
-    const canMarkComplete = hasDomains && hasParticipants && hasQuestions;
+    const canMarkComplete = hasDomains && hasQuestions;
 
     return (
       <StageContent
         stageNumber={1}
         title="Setup"
-        description="Define the foundation of your Delphi study before inviting experts."
+        description="Define the foundation of your Delphi study with research domains and guiding questions."
         status={status}
-        helpText="This stage ensures your study has a clear structure: research domains, guiding questions, and invited participants. Complete all checklist items to proceed."
+        helpText="This stage ensures your study has a clear structure: research domains and guiding questions for experts to respond to. Complete the checklist items to proceed."
         onMarkComplete={() => handleMarkStageComplete(1)}
         canMarkComplete={canMarkComplete}
       >
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <MetricCard
             label="Domains"
             value={stats.totalDomains}
@@ -281,12 +280,6 @@ export default function ReviewWorkspacePage() {
             value={stats.totalQuestions}
             icon={<MessageSquare className="h-8 w-8" />}
             subtext="For proposals"
-          />
-          <MetricCard
-            label="Participants"
-            value={stats.totalParticipants}
-            icon={<Users className="h-8 w-8" />}
-            subtext="Invited experts"
           />
         </div>
 
@@ -305,11 +298,6 @@ export default function ReviewWorkspacePage() {
               label="Create proposal questions"
               isComplete={hasQuestions}
               onClick={() => router.push(`/dashboard/studies/${studyId}/domains`)}
-            />
-            <ChecklistItem
-              label="Invite participants"
-              isComplete={hasParticipants}
-              onClick={() => router.push(`/dashboard/studies/${studyId}/participants`)}
             />
           </CardContent>
         </Card>
