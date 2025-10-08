@@ -302,18 +302,19 @@ export default function ReviewWorkspacePage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-blue-200 bg-blue-50">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle className="text-blue-900">Setup Your Study</CardTitle>
+            <CardDescription>Add domains and questions to structure your Delphi study</CardDescription>
           </CardHeader>
-          <CardContent className="flex gap-3">
-            <Button onClick={() => router.push(`/dashboard/studies/${studyId}/domains`)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Manage Domains
-            </Button>
-            <Button variant="outline" onClick={() => router.push(`/dashboard/studies/${studyId}/settings`)}>
-              <SettingsIcon className="h-4 w-4 mr-2" />
-              Study Settings
+          <CardContent>
+            <Button
+              onClick={() => router.push(`/dashboard/studies/${studyId}/domains`)}
+              size="lg"
+              className="w-full"
+            >
+              <FileText className="h-5 w-5 mr-2" />
+              Go to Domains & Questions
             </Button>
           </CardContent>
         </Card>
